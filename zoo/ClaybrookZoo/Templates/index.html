@@ -1,0 +1,204 @@
+<!--
+Template referenced from 
+citation: (Wild Nature a Animal Category Flat Bootstrap Responsive Web Template, 2020)
+Reference: W3Layouts. 2020. Wild Nature A Animal Category Flat Bootstrap Responsive Web Template. [online] Available at: <https://w3layouts.com/wild-nature-a-animal-category-flat-bootstrap-responsive-web-template/> [Accessed 25 March 2020].
+-->
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}
+        	ClaybrookZoo
+        {% endblock %}
+    </title>
+<!-- for-mobile-apps -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="{% static "css/bootstrap.css" %}" rel="stylesheet" type="text/css"  />
+<link href="{% static "css/style.css" %}" rel="stylesheet" type="text/css"  />
+<script src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+<!-- Image viewer -->
+<link rel="stylesheet" type="text/css" href="{% static "css/jquery.lightbox.css" %}" />
+<script src="{% static "js/jquery.lightbox.js" %}"></script>
+<script>
+  $(function() {
+    $('.news-grid1 a').lightbox(); 
+  });
+</script>
+<!-- font styles -->
+<link href="{% static 'css/font-awesome/css/all.css' %}" rel="stylesheet">
+</head>
+	
+<body>
+	<div class="header">
+	<div class="container">
+		<div class="header-nav">
+			<nav class="navbar navbar-default">
+				<div class="navbar-header">
+				  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				  </button>
+					<div class="logo">
+						<img src="{% static "images/logo.jpg"%}" style="float: left;height:100px">
+						<a class="navbar-brand" href="/Claybrook-Zoo/">Claybrook <span>Zoo</span></a>
+					</div>
+				</div>
+
+
+				<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+				 <ul class="nav navbar-nav">
+					<li><a href="/Claybrook-Zoo/">Home</a></li>
+					<li><a href="/Claybrook-Zoo/animal">Animals</a></li>
+					{% if request.user.role == 'visitor' %}
+					<li><a class="dropdown-item" href="/Claybrook-Zoo/visitorpanel/booking/none/0">Visitor Panel</a></li>
+					{% endif %}
+					{% if request.user.role == 'manager' or request.user.role == 'admin' or request.user.role == 'zoo keeper' or request.user.role == 'temporary staff' %}
+						<li><a href="/Claybrook-Zoo/adminpanel/dashboard/none/0">Offical Panel</a></li>
+					{% else %}
+						<li>
+							<a class="dropdown-toggle" href="#" data-toggle="dropdown">Explore</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="/Claybrook-Zoo/site/about">About</a></li>
+								<li><a class="dropdown-item" href="/Claybrook-Zoo/site/contact">Contact Us</a></li>
+								<li><a class="dropdown-item" href="/Claybrook-Zoo/site/gallery">Gallery</a></li>
+								{% if request.user.is_authenticated == False %}
+									<li><a class="dropdown-item" href="/Claybrook-Zoo/visitorpanel/booking/none/0">Book Tickets</a></li>
+									<li><a class="dropdown-item" href="/Claybrook-Zoo/visitorpanel/sponsor/none/0">Sponsor Animal</a></li>
+									<li><a class="dropdown-item" href="/Claybrook-Zoo/visitorpanel/none/none/0">Login /  Signup</a></li>
+								{% endif %}
+							</ul>
+						</li>
+					{% endif %}
+					{% if request.user.is_authenticated %}
+						<li>
+							<a class="dropdown-toggle" href="/Claybrook-Zoo/setting" data-toggle="dropdown">Settings</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="/Claybrook-Zoo/signup/update">Update Info</a></li>
+								<li><a class="dropdown-item" href="/Claybrook-Zoo/password">Change Password</a></li>
+								<li><a class="dropdown-item" href="{% url 'logout' %}"> Logout {{ request.user }}</a></li>
+							</ul>
+						</li>
+					{% endif %}
+				  </ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	</div>
+
+
+{% block content %}
+<div class="banner">
+	<div class="container">
+		<section class="slider">
+			<div class="flexslider">
+				<ul class="slides">
+					{% block login %}
+						{% for update in updates %}
+						<li>
+							<div class="banner-info">
+								<h1>{{ update.heading }}</h1>
+								<p>{{ update.description }}</p>
+								<span style="float:right">{{ update.date }}</span>
+							</div>
+						</li>
+						{% endfor %}
+					{% endblock %}
+				</ul>
+			</div>
+		</section>
+
+		<link rel="stylesheet" href="{% static "css/flexslider.css" %}" type="text/css" media="screen" />
+		<script defer src="{% static "js/jquery.flexslider.js" %}"></script>
+		<script type="text/javascript">
+			$(window).load(function () {
+				$('.flexslider').flexslider({
+					animation: "slide",
+					start: function (slider) {
+						$('body').removeClass('loading');
+					}
+				});
+			});
+		</script>
+	</div>
+</div>
+
+<div class="banner-bottom">
+	<div class="container">
+		<h3>Claybrook Zoo Welcomes You</h3>
+		<div class="welcome">
+			<img src="{% static "images/1.jpg"%}" alt=" " class="img-responsive" />
+			<h4> Claybrook Zoo is a small family-oriented zoo in the Northwest of England. </h4>
+			<p>Established in 1965, the zoo has a long
+				history of providing educational support resources 
+				for members of the public to enhance their visiting experience.</p>
+			<div class="more">
+				<a href="#" class="hvr-bounce-to-bottom">Read More</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="events row">
+	<div class="container col-md-12">
+		<h3>Words From Visitors / Sponsors</h3><br>
+			{% for feedback in feedbacks %}
+			<div class="col-md-6 events-grid">
+				<div class="col-xs-12 events-grid-right">
+					<h4>{{ feedback.sender }}</h4>
+					<p>{{ feedback.description }} </p> 
+					<p class="text-right">{{ feedback.date }}</p>
+				</div>
+			</div>
+			{% endfor %}
+	</div>
+</div>
+
+{% endblock %}
+
+<div class="footer">
+	  	<div class="container row">
+			<div class="col-md-4 col-xs-12 col-sm-12 footer-grid">
+				<h4>Services</h4>
+				<ul>
+					<li>Zoo Visit</li>
+					<li>Animal Sponsorship</li>
+					<li>Visit Booking</li>
+					<li>Animal Feeding</li>
+				</ul>
+			</div>
+			<div class="col-md-4 col-xs-12 col-sm-12 footer-grid">
+				<h4>Information</h4>
+					<ul>
+						<li><a href="/Claybrook-Zoo/site/about">About us</a></li>
+						<li><a href="/Claybrook-Zoo/site/about">Site map</a></li>
+					</ul>
+			</div>
+			<div class="col-md-4 col-xs-12 col-sm-12 footer-grid contact-grid">
+					<h4>Contact us</h4>
+					<ul>
+						<li><span class="c-icon"> </span>45 Zoo Lane , Eastlands, North Yorkshire, YR12 3TH, UK</li>
+						<li><span class="c-icon1"> </span><a href="mailto:Claybrook-Zoo@mail.com">Claybrook-Zoo@mail.com</a></li>
+						<li><span class="c-icon2"> </span>+977 981234556789</li>
+					</ul>
+					<ul class="social-icons">
+						<li><a href="#" class="facebook"> </a></li>
+						<li><a href="#" class="twitter"> </a></li>
+						<li><a href="#" class="thumb"> </a></li>
+					</ul>
+			</div>
+		</div>
+	</div>
+<div class="copy">
+	<p>Copyright &copy; {% now " Y " %} <a href="/Claybrook-Zoo/">ClaybrookZoo</a> | Implementation: Sudish Basnet
+</div>
+<script src="{% static 'js/index.js'%}"></script>
+<script src="{% static "js/bootstrap.js"%}"> </script>
+
+</body>
+</html>

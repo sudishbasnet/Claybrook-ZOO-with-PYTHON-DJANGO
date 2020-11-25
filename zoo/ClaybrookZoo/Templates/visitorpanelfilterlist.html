@@ -1,0 +1,120 @@
+<br>
+<br>
+<table class="table table-condensed">
+    {% if bookings %}
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Number of entries</th>
+            <th>Total Cost</th>
+            <th>Entry Date</th>
+            <th>Payment</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr id="booking{{ booking.id }}">
+            <td>{{ booking.id }}</td>
+            <td>{{ booking.no_of_entries }}</td>
+            <td>{{ booking.total_cost }}</td>
+            <td>{{ booking.entry_date }}</td>
+            <td>{% if booking.payment == 'yes' %}
+                    {{ booking.payment }}
+                {% else %}
+                    <a class="btn-success" href="/Claybrook-Zoo/visitorpanel/booking/pay/{{ booking.id }}">Pay now</a>
+                {% endif %}
+            </td>
+            <td>
+                <a class="fa fa-edit" href="/Claybrook-Zoo/visitorpanel/booking/update/{{ booking.id }}"> </a>||
+                <button id="{{ booking.id }}" class="deletebooking btn-danger">Cancel Booking</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+
+
+    {% elif feedbacks %}
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Uploaded date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feedback in feedbacks %}
+        <tr id="feedback{{ feedback.id }}">
+            <td>{{ feedback.id }}</td>
+            <td width="50%">{{ feedback.description }}</td>
+            <td>{{ feedback.date }}</td>
+            <td>
+                <button id="{{ feedback.id }}" class="deletefeedback btn-danger">Delete Feedback</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    
+    {% elif sponsors %}
+    <thead>
+        <tr>
+            <th>Sponsor Id</th>
+            <th>Payment Confirmed</th>
+            <th>Animal Sponsored</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sponsor in sponsors %}
+        <tr>
+            <td>{{ sponsor.id }}</td>
+            <td>
+                {% if sponsor.payment_received == 'yes' %}
+                    {{ sponsor.payment_received }}
+                {% else %}
+                    <a class="btn-success" href="/Claybrook-Zoo/visitorpanel/sponsor/pay/{{ sponsor.id }}">Pay now</a>
+                {% endif %}
+            </td>
+            <td>
+                {% for animal in sponsor.animal.all %}
+                {{ animal.name }} ,
+                {% endfor %}
+            </td>
+            <td>
+                <a href="/Claybrook-Zoo/visitorpanel/sponsor/update/{{ sponsor.id }}">Edit</a> ||
+                <button id="{{ sponsor.id }}" class="deletesponsor btn-danger">Remove</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    {% elif location == 'message' %}
+        <div >
+            <div id="msg" style="height: 270px;overflow-y:scroll;">
+                {% for msg in content %}
+                {% if request.user in msg.receiver.all %}
+                <br><button class="btn"
+                    style="width:50%;min-height: 50px;background-color:grey;border:1px solid black">{{ msg.content }}</button><br><br>
+                {% elif msg.sender == request.user %}
+                <br><button class="btn"
+                    style="width:50%;min-height:50px;float:right;border:1px solid black">{{ msg.content }}</button><br><br>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <hr>
+            <form enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="display:flex;flex-direction: row;">
+                    <input type="text" class="form-control" id="content{{ request.user.id }}" required style="width:90%"  placeholder="Ask your queries">
+                    <input type="hidden" id="userid" value="0">
+                    <button type="submit" class="sendMessage btn btn-primary" id="msg{{ request.user.id }}"
+                        style="Width:10%">Send</button>
+                </div>
+        </div>
+    {% else %}
+    <p>No data to show</p>
+    {% endif %}
+
+</table>

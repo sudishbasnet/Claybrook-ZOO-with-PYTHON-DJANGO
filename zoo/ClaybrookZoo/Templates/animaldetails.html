@@ -1,0 +1,76 @@
+{% if animals %}
+{% for animal in animals %}
+    <div class="row" style="background-color:white;margin-bottom: 4%;border:2px solid black;padding:2%;">
+        <div class="col-md-5">
+
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th scope="row">ID and Name</th>
+                            <td>{{ animal.id }}  {{ animal.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Species</th>
+                            <td colspan="2"><a href="https://en.wikipedia.org/wiki/{{ animal.species }}" target="blank">{{ animal.species }}</a></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Classification</th>
+                            <td colspan="2"><a href="https://en.wikipedia.org/wiki/{{ animal.classification }}" target="blank">{{ animal.classification }}</a></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date of Birth</th>
+                            <td colspan="2">{{ animal.dob }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Born Place</th>
+                            <td colspan="2">{{ animal.born_place }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Location in zoo</th>
+                            <td colspan="2">{{ animal.location }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>Natural Habitat </h4>
+                <p style="color:black">{{ animal.natural_habitat }}</p>
+
+                
+                <h4>Average Dimension</h4>
+                <p style="color:black">{{ animal.average_dimension }}</p>
+        </div>
+
+        <div class="col-md-4">
+            <div class="news-grid1">
+                {% for image in animal.animal_photo.all %}
+                <a class="mask" href="{{ image.photo.url }}">
+                        <img src="{{ image.photo.url }}" style="max-width:100%;max-height:200px;padding:1%;box-shadow: 5px 5px 5px grey;">
+                </a><br><br>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h4>Dietary Requirement</h4>
+            <p style="color:black">{{ animal.dietary_requirement }}</p>
+            {% if animal.sponsored_animal.all %}
+                {% for sponsor in animal.sponsored_animal.all %}
+                    {% if sponsor.payment_received == 'yes' %}
+                        <h4>Sponsors</h4>
+                        <a href="//{{ sponsor.web_address }}" target="_blank">
+                            <img src="{{ sponsor.signage_photo.url }}" style="max-width:100%;max-height:200px;box-shadow: 5px 5px 5px grey;"><br><br>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            {% if request.user.role == 'visitor' or not request.user.is_authenticated %}
+                <a class="btn btn-primary col-md-12" href="/Claybrook-Zoo/visitorpanel/sponsor/add/{{ animal.id }}">Sponsor this animal</a>
+            {% endif %}
+            {% endif %}
+        </div>
+
+    </div>
+{% endfor %}
+{% else %}
+<span>No animals to show</span>
+{% endif %}

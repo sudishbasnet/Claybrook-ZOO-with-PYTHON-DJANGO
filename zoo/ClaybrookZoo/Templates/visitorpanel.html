@@ -1,0 +1,120 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+{{ location }}
+{% endblock %}
+
+{% block content %}
+<div class="navbar-inverse col-md-12" style="padding:0;margin-bottom:20px;">
+    <div class="col-md-3">
+        <h5 class="text-uppercase" style="color:white;margin-top:10%;margin-left:30%;">{{ request.user.first_name }}
+            {{ request.user.last_name }}</h5>
+        <hr>
+        <ul class="nav nav-stacked">
+            <li><a href="/Claybrook-Zoo/visitorpanel/booking/none/0">Bookings</a></li>
+            <li><a href="/Claybrook-Zoo/visitorpanel/message/none/0">Messages</a></li>
+            <li><a href="/Claybrook-Zoo/visitorpanel/feedback/none/0">Feedbacks</a></li>
+            <li><a href="/Claybrook-Zoo/visitorpanel/sponsor/none/0">Sponsor Details</a></li>
+            <hr>
+        </ul>
+    </div>
+
+    <div class="col-md-9" style="background-color: darkgray;min-height:259px;">
+        <h3 class="text-uppercase" style="margin-left:40%">{{ title }}</h3>
+        <hr>
+
+        {% if visitoraction %}
+        {% if action == 'none' or action == 'visitor' or action == 'staff' %}
+        <a href="/Claybrook-Zoo/visitorpanel/{{ location }}/add/0">
+            <button class="btn-primary" style="width:150px;text-align: left;font-size:14px">{{ visitoraction }}</button>
+        </a><br>
+        {% endif %}
+        {% endif %}
+
+
+
+        {% if action == 'add' or action == 'update' %}
+        {% load crispy_forms_tags %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form | crispy }}
+            {% if location == 'sponsor' and action == 'add' %}
+                <div class="checkbox">
+                    <h4>By signing the agreement, you are confirming the following to be true:-</h4>
+                    <p>1) I agree to sponsor the above named animal(s) for the period specified above.<br>
+                    2) I understand that the sponsorship fee is due in full by the {% now " d M Y " %} and I will ensure that this fee is<br>
+                    paid to Claybrook Zoo Ltd by this date.<br>
+                    3) I understand that all sponsorship fees are non-refundable.<br>
+                    4) I agree with the above signage layout/dimensions and understand these cannot be changed once the agreement has<br>
+                    started.<br><br>
+                    
+                    Signed : {{ request.user }}<br>
+                    
+                    Dated : {% now " d M Y " %}</p><br>
+
+                    <label><input type="checkbox" value="" required>Agree to continue</label>
+                </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary" style="float: right;">{{ visitoraction }}</button>
+        </form>
+        {% else %}
+            <div id="tabledata">
+                {% include 'visitorpanelfilterlist.html' %}
+            </div>
+        
+        {% endif %}
+    </div>
+</div>
+{% if id != 0 %}
+    <script>
+        document.getElementById("id_animal").value = '{{ id }}';
+        document.getElementById("id_animal").setAttribute("disabled", "true");
+        document.getElementById("id_animal").setAttribute("required", "false");
+    </script>
+{% endif %}
+
+{% if location == 'sponsor' %}
+{% if action == 'update' %}
+    <script>
+        document.getElementById("id_agreement_period").setAttribute("disabled", "true");
+        document.getElementById("id_sponsor_band").setAttribute("disabled", "true");
+        document.getElementById("id_official_id").setAttribute("disabled", "true");
+    </script>
+{% endif %}
+<script>
+    
+    $("#id_sponsor_band").click(function () {
+
+        var optionvalue = document.getElementById("id_animal").options, count = 0;
+        for (var i=0; i < optionvalue.length; i++) {
+        if (optionvalue[i].selected) count++;
+        }
+        bandid = document.getElementById("id_sponsor_band").value
+            if (bandid == 'B')
+                fee = 2000;
+            else if (bandid == 'C')
+                fee = 1500;
+            else if (bandid == 'D')
+                fee = 1000;
+            else if (bandid == 'E')
+                fee = 500;
+            else
+                fee = 2500;
+            document.getElementById("id_total_fee").value =  fee * count;
+        });
+    
+</script>
+
+{% elif location == 'booking' %}
+<script>
+     document.getElementById("id_entry_date").setAttribute("type", "date");
+        $("#id_no_of_entries").keyup(function () {
+            if (document.getElementById("id_no_of_entries").value == '0') {
+                document.getElementById("id_no_of_entries").value = 1
+            }
+            document.getElementById("id_total_cost").value = document.getElementById("id_no_of_entries").value * 99;
+        });
+</script>
+{% endif %}
+
+{% endblock %}

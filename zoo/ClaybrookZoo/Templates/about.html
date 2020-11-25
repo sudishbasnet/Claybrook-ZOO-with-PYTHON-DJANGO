@@ -1,0 +1,94 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+	About
+{% endblock %}
+
+{% block content %}
+
+	<!-- why-choose -->
+	<div class="why-choose">
+		<div class="container">
+			<h3>Know About Us</h3>
+			<div class="why-choose-grids">
+				<div class="col-md-6 why-choose-grid">
+					<div class="why-choose-grid-hover">
+						<p>About Zoo</p>
+					</div>
+					<div class="why-choose-grds">
+						<div class="col-xs-12 why-choose-grd-right">
+							<h4>Manager : Matthew Jones</h4>
+							<p class="news-grid1">
+								Typical Staffing Levels (20-120 staff dependant on session - many are casual positions for the summer months).
+								Estimated total visitors per year : 1.4 Million (Approx average of 27,000 per day)
+							</p>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+				<div class="col-md-6 why-choose-grid">
+					<div class="why-choose-grid-hover">
+						<p>Zoo map with keys</p>
+					</div>
+					<div class="why-choose-grds">
+						<div class="col-xs-5 why-choose-grd">
+							<div class="news-grid1">
+								<a class="mask" href="{% static "images/map.jpg" %}">
+									<img src="{% static "images/map.jpg" %}" alt=" " class="img-responsive" />
+								</a>
+							</div>
+						</div>
+						<div class="col-xs-7 why-choose-grd-right">
+							<h4>Zoo Map</h4>
+						<p class="news-grid1">
+							Click the map to view in full screen or to know about keys
+							<a class="mask" href="{% static "images/mapkey.jpg" %}">click here</a>.
+						</p>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			<div class="why-choose-grids">
+				<div class="col-md-6 why-choose-grid">
+					<div class="why-choose-grid-hover">
+						<p>Time Schedule</p>
+					</div>
+					<div class="why-choose-grds">
+						<div class="col-xs-5 why-choose-grd">
+							<div class="news-grid1">
+								<a class="mask" href="{% static "images/16.jpg" %}">
+									<img src="{% static "images/16.jpg" %}" alt=" " class="img-responsive" />
+								</a>
+							</div>
+						</div>
+						<div class="col-xs-7 why-choose-grd-right">
+							<p class="news-grid1">Opening Times (BST) 10-8pm all other times of the year 12-6pm</p>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+				<div class="col-md-6 why-choose-grid">
+					<div class="why-choose-grid-hover">
+						<p>Zoo Visit And Sponsorship</p>
+					</div>
+					<div class="why-choose-grds">
+						<div class="col-xs-12 why-choose-grd-right">
+						<p class="news-grid1">
+							You can either purchase ticket through this site by creating account and paying with paypal . While you can also
+							purchased tickets during visit.<br><br>
+							For sponsoring animal you can search on animal details page or either you can gor direct to sponsorship page with
+							your visitor id and sponsor animal.
+						</p>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!-- //why-choose -->
+
+{% endblock %}

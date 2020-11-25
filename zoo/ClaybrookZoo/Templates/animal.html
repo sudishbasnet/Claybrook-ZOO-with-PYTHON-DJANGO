@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+        Animals
+{% endblock %}
+
+{% block content %}
+<div class="banner" style="margin-top:-65px;">
+    <div class="banner-info">
+    <h2 class="text-center">Zoo Animals</h2>
+    <hr>
+    <div class="container">
+        <button class="filteranimal btn btn-primary" style="width:200px" >Filter Animals</button>
+        <form id="animalform" style="display: none;">
+            <h7>Filter animals according to their likely specifications</h7>
+            <br>
+            {% csrf_token %}
+            <div style="display: flex;flex-direction: row;">
+                <input id="aname" type="text" class="form-control" placeholder="Enter Animal Name"
+                    onkeyup="filterAnimal()">
+                <input id="aspecies" type="text" class="form-control" placeholder="Enter Animal Species"
+                    onkeyup="filterAnimal()">
+            </div>
+            <div style="display: flex;flex-direction: row;">
+                <input id="ahabitat" type="text" class="form-control" placeholder="Enter Animal Habitat" onkeyup="filterAnimal()">
+                <input id="adiet" type="text" class="form-control" placeholder="Enter Animal Dietery requirement" onkeyup="filterAnimal()">
+            </div>
+            <div class="form-inline">
+                <h5>
+                    <label for="classification">Animal Classification
+                        <select id="classification" class="form-control" onclick="filterAnimal()">
+                            <option value=''>All Animals</option>
+                            <option>Mammal</option>
+                            <option>Reptile</option>
+                            <option>Bird</option>
+                            <option>Fish</option>
+                        </select>
+                    </label>
+                    <label for="sponsor">Filter by sponsorship
+                        <select id="sponsor" class="form-control" onclick="filterAnimal()">
+                            <option value=''>All Animals</option>
+                            <option>Sponsored</option>
+                            <option>Non sponsored</option>
+                        </select>
+                    </label>
+                    <label for="condition">Filter by condition
+                        <select id="condition" class="form-control" onclick="filterAnimal()">
+                            <option value=''>All Animals</option>
+                            <option>Normal</option>
+                            <option>Critical</option>
+                            <option>Dead</option>
+                        </select>
+                    </label>
+                </h5>
+            </div>
+        </form>
+        <br><br>
+        <div id="adata">
+            {% include 'animaldetails.html' %}
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

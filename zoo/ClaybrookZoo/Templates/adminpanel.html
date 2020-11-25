@@ -1,0 +1,238 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+	{{ location }}
+{% endblock %}
+
+{% block content %}
+	<div class="navbar-inverse col-md-12" style="padding:0;margin-bottom:20px;">
+		<div class="col-md-3">
+			<h5 class="text-uppercase" style="color:white;margin-top:10%;margin-left:25%;">{{ request.user.username }}
+				|| {{ request.user.role }}</h5>
+			<hr>
+			<ul class="nav nav-stacked">
+				<li><a href="/Claybrook-Zoo/adminpanel/dashboard/none/0">Dashboard</a></li>
+				{% if request.user.role == 'admin' or request.user.role == 'manager' or request.user.role == 'temporary staff' %}
+					<li><a href="/Claybrook-Zoo/adminpanel/booking/none/0">Bookings</a></li>
+				{% endif %}
+				{% if request.user.role == 'admin' or request.user.role == 'manager' %}
+					<li><a href="/Claybrook-Zoo/adminpanel/message/none/0">Messages</a></li>
+					<li><a href="/Claybrook-Zoo/adminpanel/feedback/none/0">Fedbacks</a></li>
+					<li><a href="/Claybrook-Zoo/adminpanel/user/none/0">Users</a></li>
+				{% endif %}
+				<li><a href="/Claybrook-Zoo/adminpanel/animal/none/0">Animals</a></li>
+				<li><a href="/Claybrook-Zoo/adminpanel/watchlist/none/0">Watch List</a></li>
+				{% if request.user.role == 'admin' or request.user.role == 'manager' %}
+					<li><a href="/Claybrook-Zoo/adminpanel/sponsor/none/0">Sponsors </a></li>
+				{% endif %}
+				<hr>
+			</ul>
+		</div>
+		
+		<div class="col-md-9" style="background-color: darkgray;min-height:478px">
+			<h3 class="text-uppercase" style="text-align: center;">{{ title }}</h3>
+			<hr>
+		
+			{% if adminaction %}
+			{% if action == 'none' or action == 'visitor' or action == 'staff' %}
+			<a href="/Claybrook-Zoo/adminpanel/{{ location }}/add/0">
+				{% if location == 'dashboard' %}
+					<button class="btn-primary" style="width:200px;text-align: left;font-size:14px">{{ adminaction }}</button>
+				{% else %}
+					<button class="btn-primary" style="width:150px;text-align: left;font-size:14px">{{ adminaction }}</button>
+				{% endif %}
+			</a><br>
+			{% endif %}
+			{% endif %}
+		
+		
+			{% if action == 'add' or action == 'update' or action == 'classification' %}
+			{% load crispy_forms_tags %}
+			<form class="adminform col-md-12" method="post" enctype="multipart/form-data">
+				{% if location == 'animal' %}
+				{% if action == 'add' or action == 'classification' %}
+					<label for="classification"">Select animal classification to insert more details  
+						<select id="classification" name="classification" class="form-control" onclick="searchClassification()"	style="border:1px solid darkorange;">
+							<option>Mammal</option>
+							<option>Bird</option>
+							<option>Fish</option>
+							<option>Reptile</option>
+						</select>
+					</label>
+				{% else %}
+					<div id="div_id_classification" class="form-group"> 
+						<label for="id_classification" class="col-form-label">Classification</label>
+						<a class="changeClassification" href="/Claybrook-Zoo/adminpanel/animal/classification/{{ animals.id }}" >Change Classification</a>
+						<div class=""> 
+							<input type="text" name="classification" value="{{ animals.classification }}" class="textinput textInput form-control" disabled> 
+						</div>
+					</div>
+				{% endif %}
+					<div id="classificationform">
+						{% include 'classificationform.html' %}
+					</div>
+				{% endif %}
+				{% csrf_token %}
+				{{ form | crispy }}
+				{% if location == 'animal' %}
+				{% if action != 'classification' %}
+					<div class="form-group">
+						<div style="display: flex;flex-direction:row">
+							{% for img in animals.animal_photo.all %}
+							<div id="img{{ img.id }}">
+								<button type="submit" class="deleteImage btn-danger fa fa-minus-circle left" id="{{ img.id }}"></button>
+								<img src="{{ img.photo.url }}" width="50%">
+							</div>
+							{% endfor %}
+						</div>
+						<label for="photo">Photo</label>
+						<input type="file" class="form-control" name="photo" id="photo" multiple>
+					</div>
+				{% endif %}
+				{% endif %}
+				<button type="submit" class="btn btn-primary" style="float: right;">{{ adminaction }}</button>
+			</form>
+		
+			{% else %}
+			{% if location == 'user' %}
+			<a href="/Claybrook-Zoo/adminpanel/user/staff/0">
+				<button class="btn-warning" style="width:150px;text-align: left;font-size:14px">Filter By Staff</button>
+			</a><br>
+			<a href="/Claybrook-Zoo/adminpanel/user/visitor/0">
+				<button class="btn-success" style="width:150px;text-align: left;font-size:14px">Filter By Visitors</button>
+			</a>
+			<input id="username" type="text" class="form-control" placeholder="Filter By Username" onkeyup="filterUser()" style="width:150px">
+		
+		
+		
+			{% elif location == 'animal' %}
+			<button class="filteranimal btn-success center" style="width:150px;text-align: left;font-size:14px">Filter
+				Animals</button>
+			<form id="animalform" style="display: none;">
+				{% csrf_token %}
+				<div>
+					<input id="animalname" type="text" class="form-control col-md-5" placeholder="Enter Animal Name"
+						onkeyup="searchAnimal()">
+					<input id="species" type="text" class="form-control col-md-5" placeholder="Enter Animal Species"
+						onkeyup="searchAnimal()">
+				</div>
+				<div class="form-inline">
+					<h5>
+						<label for="classification" style="width:20%">Animal Classification </label>
+							<select id="classification" style="width:20%" class="form-control" onclick="searchAnimal()">
+								<option value=''>All</option>
+								<option>Mammal</option>
+								<option>Reptile</option>
+								<option>Bird</option>
+								<option>Fish</option>
+							</select>
+						<label for="visibility" style="width:20%">Animal Visibility </label>
+							<select id="visibility" style="width:20%" class="form-control" onclick="searchAnimal()">
+								<option value=''>All</option>
+								<option value='visible'>Visible Animals</option>
+								<option value='archive'>Archived Animals</option>
+							</select>
+						<br>
+						<label for="condition" style="width:20%">Filter by condition </label>
+							<select id="condition" style="width:20%" class="form-control" onclick="searchAnimal()">
+								<option value=''>All</option>
+								<option>Normal</option>
+								<option>Critical</option>
+								<option>Dead</option>
+							</select>
+
+						<label for="sponsor" style="width:20%">Filter by sponsorship </label>
+							<select id="sponsor" style="width:20%" class="form-control" onclick="searchAnimal()">
+								<option value=''>All</option>
+								<option>Sponsored</option>
+								<option>Non sponsored</option>
+							</select>
+
+					</h5>
+				</div>
+			</form>
+			{% elif location == 'sponsor' %}
+			<input id="username" type="text" class="form-control" placeholder="Filter By Name" onkeyup="filterSponsor()"
+				style="width:150px">
+			<div class="form-inline">
+			<h6><label class="left" for="visibility"">Filter By Comfirmation </label></h6>
+				<select id="sponsor" class="form-control" onclick="searchSponsor()" style="width:150px">
+					<option value="">All Sponsors</option>
+					<option value="yes">Confirmed</option>
+					<option value="no">Not Confirmed</option>
+				</select>
+			</div>
+			{% elif location == 'booking' %}
+				<a href="/Claybrook-Zoo/adminpanel/booking/yes/0">
+					<button class="btn-warning" style="width:200px;text-align: left;font-size:14px">Filter By Payemnet Done</button>
+				</a><br>
+				<a href="/Claybrook-Zoo/adminpanel/booking/no/0">
+					<button class="btn-success" style="width:200px;text-align: left;font-size:14px">Filter By Payment Pending</button>
+				</a>
+				<input id="username" type="text" class="form-control" placeholder="Filter By Username" onkeyup="filterBooking()" style="width:200px">
+		
+			{% elif location == 'watchlist' %}
+				<input id="username" type="text" class="form-control" placeholder="Filter By Name" onkeyup="filterWatchlist()"
+					style="width:150px">
+			{% endif %}
+			{% endif %}
+		
+			{% if action == 'none' or action == 'staff' or  action == 'visitor' or action == 'yes' or action == 'no' %}
+			<div id="tabledata">
+				{% include 'adminpanelfilterlist.html' %}
+			</div>
+			{% endif %}
+			
+		</div>
+		
+	</div>
+{% if location == 'sponsor' %}
+<script>
+
+	$("#id_sponsor_band").click(function () {
+
+		var optionvalue = document.getElementById("id_animal").options, count = 0;
+		for (var i = 0; i < optionvalue.length; i++) {
+			if (optionvalue[i].selected) count++;
+		}
+		bandid = document.getElementById("id_sponsor_band").value
+		if (bandid == 'B')
+			fee = 2000;
+		else if (bandid == 'C')
+			fee = 1500;
+		else if (bandid == 'D')
+			fee = 1000;
+		else if (bandid == 'E')
+			fee = 500;
+		else
+			fee = 2500;
+		document.getElementById("id_total_fee").value = fee * count;
+	});
+
+</script>
+{% endif %}
+
+{% if location == 'animal' or location == 'watchlist' %}
+<script>
+	document.getElementById("id_dob").setAttribute("type", "date");
+	document.getElementById("id_date_joined").setAttribute("type", "date");
+</script>
+<script>
+	document.getElementById("id_observation_date").setAttribute("type", "date");
+</script>
+
+{% endif %}
+
+{% if location == 'booking' %}
+<script>
+	document.getElementById("id_entry_date").setAttribute("type", "date");
+	$("#id_no_of_entries").keyup(function () {
+		if (document.getElementById("id_no_of_entries").value == '0') {
+			document.getElementById("id_no_of_entries").value = 1
+		}
+		document.getElementById("id_total_cost").value = document.getElementById("id_no_of_entries").value * 99;
+	});
+</script>
+{% endif %}
+
+{% endblock %}

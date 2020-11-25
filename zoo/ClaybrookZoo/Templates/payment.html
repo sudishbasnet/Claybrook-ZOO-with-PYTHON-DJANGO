@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block title %}Pay using PayPal{% endblock %}
+{% block login %}
+<li>
+        <div class="banner-info">
+        {% if action == 'process' %}
+                <h1>Pay for {{ name }} using PayPal</h1><br><br>
+                {{ form.render }}
+                {% if booking %}
+                        <a style="float:right" class="btn btn-primary" href="/Claybrook-Zoo/visitorpanel/booking/none/0">Pay while comming to visit</a>
+                {% else %}
+                        <a style="float:right" class="btn btn-primary" href="/Claybrook-Zoo/visitorpanel/sponsor/none/0">Pay with other ways later</a>
+                {% endif %}
+        {% elif action == 'done' %}
+                <h1>{{ name }} Payment</h1>
+                <p>Payment you made is successfull, related person will accept from paypal soon.</p>
+                {% if booking %}
+                        <a style="float:right" class="btn btn-primary" href="/Claybrook-Zoo/visitorpanel/booking/none/0">Redirect to booking page</a>
+                {% else %}
+                        <a style="float:right" class="btn btn-primary" href="/Claybrook-Zoo/visitorpanel/sponsor/none/0">Redirect to sponsor page</a>
+                {% endif %}
+        {% else %}
+                <h1>Payment Cancelled</h1>
+                <p>Some problem occured while payment or payment was cancelled.</p>
+                {% if booking %}
+                        <a style="float:right" class="btn btn-primary" href="/Claybrook-Zoo/visitorpanel/booking/none/0">Pay while comming to visit</a>
+                {% else %}
+                        <a style="float:right" class="btn btn-primary" href="/Claybrook-Zoo/visitorpanel/sponsor/none/0">Pay later</a>
+                {% endif %}
+        {% endif %}
+        <br>
+        </div>
+</li>
+{% endblock %}

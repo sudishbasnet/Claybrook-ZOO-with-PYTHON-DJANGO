@@ -1,0 +1,29 @@
+<div class="modal fade" id="message{{ message.id }}" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 type="button" class="close" data-dismiss="modal">Close</h3>
+                <h4 class="modal-title text-uppercase text-center">{{ message.sender }}</h4>
+            </div>
+            <div class="modal-body">
+                <div id="msg" style="height: 400px;overflow-y:scroll;">
+                    {% for msg in content %}
+                        {% if msg.sender == message.sender %}
+                            <br><button class="btn" style="width:50%;min-height: 50px;background-color:grey;border:1px solid black">{{ msg.content }}</button><br><br>
+                        {% elif message.sender in msg.receiver.all %}
+                            <br><button class="btn" style="width:50%;min-height:50px;float:right;border:1px solid black"><h4 style="float:left">{{ msg.sender }}</h4><br>{{ msg.content }}</button><br><br>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <hr>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div style="display:flex;flex-direction: row;">
+                        <input type="text" class="form-control" id="content{{ message.id }}" required style="width:90%">
+                        <input type="hidden" id="userid" value="{{ message.sender.id }}">
+                        <button type="submit" class="sendMessage btn btn-primary" id="msg{{ message.id }}" style="Width:10%">Send</button>
+                    </div>
+        </div>
+    </div>
+</div>
+</div>

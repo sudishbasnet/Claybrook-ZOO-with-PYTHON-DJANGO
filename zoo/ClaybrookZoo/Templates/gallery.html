@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+	Gallery
+{% endblock %}
+
+{% block content %}
+	<div class="gallery">
+		<h3>Zoo Gallery</h3>
+		<div class="container">
+			{% for animal in gallery %}
+			{% for image in animal.animal_photo.all %}
+				<div class="news-grid1 col-md-3 col-xs-6" style="height:200px">
+					<a class="mask" href="{{ image.photo.url }}">
+						<img src="{{ image.photo.url }}" style="max-width:100%;max-height:100%">
+					</a>
+				</div>
+			{% endfor %}
+			{% endfor %}
+		</div>
+	</div>
+	
+{% endblock %}

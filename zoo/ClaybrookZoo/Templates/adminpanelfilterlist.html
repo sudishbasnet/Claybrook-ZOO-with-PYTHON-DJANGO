@@ -1,0 +1,344 @@
+<br>
+<br>
+<table class="table table-condensed">
+    {% if animals %}
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Species</th>
+                <th>Category</th>
+                <th>Condition</th>
+                {% if request.user.role == 'admin' or request.user.role == 'manager' or role == 'admin' or role == 'manager' %}
+                    <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for animal in animals %}
+            <tr id="animal{{ animal.id }}">
+                <td>{{ animal.id }}</td>
+                <td>{{ animal.name }}</td>
+                <td>{{ animal.species }}</td>
+                <td>{{ animal.classification }}</td>
+                <td>{{ animal.condition }}</td>
+                {% if request.user.role == 'admin' or request.user.role == 'manager' or role == 'admin' or role == 'manager' %}
+                <td>
+                    <a class="fa fa-edit" href="/Claybrook-Zoo/adminpanel/animal/update/{{ animal.id }}"></a>
+                    <a id="arc{{ animal.id }}">
+                    {% if animal.visibility == 'archive' %}
+                        <button id="{{ animal.id }}" class="archiveanimal btn-success" style="width:80px">Show</button>
+                    {% else %}
+                        <button id="{{ animal.id }}" class="archiveanimal btn-danger" style="width:80px">Archive</button>
+                    {% endif %}
+                    </a>
+                    || <button id="{{ animal.id }}" class="deleteAnimal btn-danger fa fa-minus-circle"></button>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    
+
+
+
+
+    {% elif watchlist %}
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Animal</th>
+            <th>Condition</th>
+            <th>Date</th>
+            {% if request.user.role != 'visitor' and request.user.role != 'temporary staff' %}
+                <th>Action</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for watch in watchlist %}
+        <tr id="watch{{ watch.id }}">
+            <td>{{ watch.id }}</td>
+            <td>{{ watch.animal }}</td>
+            <td>{{ watch.condition }}</td>
+            <td>{{ watch.observation_date }}</td>
+            {% if request.user.role != 'visitor' and request.user.role != 'temporary staff' %}
+                <td>
+                    <a class="fa fa-edit" href="/Claybrook-Zoo/adminpanel/watchlist/update/{{ watch.id }}"></a>
+                    || <button id="{{ watch.id }}" class="deleteWatchlist btn-danger fa fa-minus-circle"></button>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+    
+
+
+
+
+    {% elif users %}
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th>Role</th>
+                {% if request.user.role == 'admin' or role == 'admin' %}
+                    <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr id="user{{ user.id }}">
+                <td>{{ user }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                {% if request.user.role == 'admin' or role == 'admin' %}
+                    <td>                   
+                        <a class="fa fa-edit" href="/Claybrook-Zoo/adminpanel/user/update/{{ user.id }}"></a> 
+                        {% if user.role != 'admin' %} ||
+                            <button id="{{ user.id }}" class="deleteuser btn btn-danger fa fa-user-minus"></button>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+
+
+    {% elif sponsors %}
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Primary Contact</th>
+                <th>Address</th>
+                <th>Animal Sponsored</th>
+                {% if request.user.role == 'admin' or role == 'admin' %}
+                    <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for sponsor in sponsors %}
+            <tr id="sponsor{{ sponsor.id }}">
+                <td>{{ sponsor.name }}</td>
+                <td>{{ sponsor.primary_contact }}</td>
+                <td>{{ sponsor.address }}</td>
+                <td>
+                    {% for animal in sponsor.animal.all %}
+                    {{ animal.name }} ,
+                    {% endfor %}
+                </td>
+                {% if request.user.role == 'admin' or role == 'admin' %}
+                <td>
+                    <a class="fa fa-edit" href="/Claybrook-Zoo/adminpanel/sponsor/update/{{ sponsor.id }}"></a> ||
+                    <button id="{{ sponsor.id }}" class="deletesponsor btn-danger fa fa-minus-circle">
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+
+    {% elif updates %}
+        <thead>
+            <tr>
+                <th>Heading</th>
+                <th>Uploaded Date</th>
+                <th>Uploaded By</th>
+                {% if request.user.role == 'admin' or request.user.role == 'manager' %}
+                    <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for update in updates %}
+            <tr id="update{{ update.id }}">
+                <td>{{ update.heading }}</td>
+                <td>{{ update.date }}</td>
+                <td>{{ update.uploaded_by }}</td>
+                {% if request.user.role == 'admin' or request.user.role == 'manager' %}
+                <td>
+                    <a class="fa fa-edit" href="/Claybrook-Zoo/adminpanel/dashboard/update/{{ update.id }}"></a> ||
+                    <button id="{{ update.id }}" class="deleteupdate btn-danger fa fa-minus-circle"></button>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    {% elif bookings %}
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Mail</th>
+            <th>Number of entries</th>
+            <th>Entry Date</th>
+            <th>Payment</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr id="booking{{ booking.id }}">
+            <td>{% if booking.booked_by %}
+                    {{ booking.booked_by }}
+                {% else %}
+                    {{ booking.name }}
+                {% endif %}
+            </td>
+            <td>{{ booking.booked_by.email }}</td>
+            <td>{{ booking.no_of_entries }}</td>
+            <td>{{ booking.entry_date }}</td>
+            <td>{{ booking.payment }}</td>
+            <td>
+                <a class="fa fa-edit" href="/Claybrook-Zoo/adminpanel/booking/update/{{ booking.id }}"></a> ||
+                <button id="{{ booking.id }}" class="deletebooking btn-danger fa fa-minus-circle"></button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+
+    {% elif messages %}
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for message in messages %}
+        <tr id="message{{ message.id }}">
+            <td>{{ message.sender }}</td>
+            <td>{{ message.content }}</td>
+            <td>{{ message.date }}</td>
+            <td>
+                <a href="#" id="{{ message.id }}" data-toggle="modal" data-target="#message{{ message.id }}"> Reply </a> ||
+                <button id="{{ booking.id }}" class="deletebooking btn-danger fa fa-minus-circle"></button>
+            </td>
+        </tr>
+        {% include 'modals/message.html' %}
+        {% endfor %}
+    </tbody>
+
+
+    {% elif feedbacks %}
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Description</th>
+            <th>Uploaded date</th>
+            <th>Highlight the feedback</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feedback in feedbacks %}
+        <tr id="feedback{{ feedback.id }}">
+            <td>{{ feedback.id }}</td>
+            <td>{{ feedback.sender }}</td>
+            <td width="50%">{{ feedback.description }}</td>
+            <td>{{ feedback.date }}</td>
+            <td id="highlight{{ feedback.id }}">
+                {% if feedback.highlight == True %}
+                    <button id="{{ feedback.id }}" class="highlight btn-danger" style="Width:150px">Cancel Highlight</button>
+                {% else %}
+                    <button id="{{ feedback.id }}" class="highlight btn-success" style="Width:150px">Highlight</button>
+                {% endif %}
+            </td>
+            <td>
+                <button id="{{ feedback.id }}" class="admindelfeedback btn-danger fa fa-minus-circle"></button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+
+    {% else %}
+        <p style="color:darkred">No data to show</p>
+    {% endif %} 
+</table>
+{% if location == 'dashboard' %}
+<div>
+
+    <div id="piechart"></div>
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script type="text/javascript">
+        // Load google charts
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Draw the chart and set the chart values
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Task', 'Hours per Day'],
+                ['Sponsored Animals', {{ sa }}],
+                ['Critical Animals', {{ ca }}],
+                ['Animal Dead', {{ da }}],
+                ['Normal Animals', {{ na }}],
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = { 'title': 'Overall Animal Report','height': 300 };
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
+    </script>
+
+</div>
+<br>
+<hr>
+
+<h5 class="text-center">System events and attributes rate</h5>
+<div class="progress" style="height:25px;">
+    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
+        style="width:{{ visitorper }}%">
+        Visitors percentage in compare to users : {{ visitorper }}%
+    </div>
+</div>
+<div class="progress" style="height:25px;">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" style="width:{{ bookingper }}%;">
+        Bookings percentage in compare to visitors : {{ bookingper }}%
+    </div>
+</div>
+<div class="progress" style="height:25px;">
+    <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar"
+        style="width:{{ animalper }}%">
+        Animal percentage in compare to visitors : {{ animalper }}%
+    </div>
+</div>
+<div class="progress" style="height:25px;">
+    <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"
+        style="width:{{ staffper }}%">
+        Staff percentage in compare to users : {{ staffper }}%
+    </div>
+</div>
+<div class="progress" style="height:25px;">
+    <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar"
+        style="width:{{ sponsorper }}%">
+        Sponsorship percentage in compare to users : {{ sponsorper }}%
+    </div>
+</div>
+
+
+
+{% endif %}
+
+
+    
+
+
